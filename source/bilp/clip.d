@@ -58,10 +58,7 @@ class ClipManager {
     }
 
     void readClips() {
-        auto res = requestHTTP(homeURL, delegate void (scope HTTPClientRequest req) {});
-        scope (exit) res.dropBody();
-        cf.enforce200(res, homeURL);
-        string homeHTML = readAllUTF8(res.bodyReader, true);
+        string homeHTML = cf.download(homeURL);
         foreach(captures; match(homeHTML, ctRegex!(`<a\s+href=["'](\S+)["']`, `gi`))) {
             string url = captures[1];
             if (!match(url, pattern).empty) {
@@ -77,10 +74,7 @@ class ClipManager {
     void clipArticle(string articleURL) {
         logInfo("clipping article %s", articleURL);
 
-        auto res = requestHTTP(articleURL, delegate void (scope HTTPClientRequest req) {});
-        scope (exit) res.dropBody();
-        cf.enforce200(res, articleURL);
-        string html = readAllUTF8(res.bodyReader, true);
+        string html = cf.download(articleURL);
 
         string field(string sel, string def) {
             if (auto alg = sel in mdalgs) {

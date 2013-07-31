@@ -66,12 +66,20 @@ class ConfigFile : XmlErrorHandler {
         return apdr.result;
     }
 
-    // utility function
-    void enforce200(HTTPClientResponse res, string url) {
-        auto sc = res.statusCode;
-        if (sc != 200) {
-            throw new Exception("received status "~to!string(sc)~" from "~url~": "~res.statusPhrase);
-        }
+    // -- utility functions --
+    string download(string url) {
+        string result;
+        requestHTTP(url,
+            delegate (scope HTTPClientRequest req) {},
+            delegate (scope HTTPClientResponse res) {
+                scope (exit) res.dropBody();
+                auto sc = res.statusCode;
+                if (sc != 200) {
+                    throw new Exception("received status "~to!string(sc)~" from "~url~": "~res.statusPhrase);
+                }
+                result = readAllUTF8(res.bodyReader, true);
+            });
+        return result;
     }
 
   private:

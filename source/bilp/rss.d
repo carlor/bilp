@@ -21,16 +21,8 @@ import vibe.d;
 
 public:
 void parseRssItems(string url, ConfigFile cf, ItemHandler handler) {
-    auto res = requestHTTP(url, delegate void(scope HTTPClientRequest req) {});
-    scope (exit) res.dropBody();
-    int sc = res.statusCode;
-    if (sc != 200) {
-        cf.warn("received http status "~to!string(sc)~" from "~url);
-    } else {
-        auto rdr = new RssReader(url, cf, handler);
-        string buf = readAllUTF8(res.bodyReader, true);
-        rdr.read(buf);
-    }
+    auto rdr = new RssReader(url, cf, handler);
+    rdr.read(cf.download(url));
 }
 
 alias ItemHandler = bool delegate(RssItem);

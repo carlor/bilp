@@ -11,6 +11,9 @@ If you have a binary, it should work out-of-the-box. Copy it to an accessible
 location, and you're ready for step 2.
 
 To compile from source, you need to install [dub](http://code.dlang.org/download).
+
+You should also install [my modified version of tango](http://github.com/carlor/tango-dub/)
+
 Then just run:
 
     $ dub build

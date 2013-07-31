@@ -1,11 +1,11 @@
 {
 	"name": "bilp",
 	"description": "Basic Internet Landing Page",
-	"homepage": "http://bitbucket.org/personak/bilp",
+	"homepage": "https://github.com/carlor/bilp",
 	"copyright": "Copyright © 2013 Nathan M. Swan",
-	"authors": ["Nathan M. Swan"	],
+	"authors": ["Nathan M. Swan"],
 	"dependencies": {
-	    "vibe-d": {"path": "../vibe.d", "version": "~remove_client_destructor"},
+	    "vibe-d": "~master",
 	    "tango": {"path": "../dvm/tango", "version": "~master"}
 	}
 }
