@@ -4,6 +4,7 @@
 	"homepage": "https://github.com/carlor/bilp",
 	"copyright": "Copyright © 2013 Nathan M. Swan",
 	"authors": ["Nathan M. Swan"],
+    "license": "GPL-3.0",
 	"dependencies": {
 	    "vibe-d": "~master",
 	    "tango": {"path": "../dvm/tango", "version": "~master"}
