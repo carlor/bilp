@@ -10,7 +10,7 @@ import bilp.server;
 
 BilpServer server;
 
-static this() {
+shared static this() {
     server = new BilpServer();
     server.start();
 }
