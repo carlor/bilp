@@ -131,8 +131,8 @@ Date parseDate(string dt) {
     bool foundMonth = false;
     {
         // method 1: names
-        static string[] mnames = ["jan", "feb", "mar", "apr", "may",
-                                  "jun", "jul", "aug", "sep", "nov", "dec"];
+        static string[] mnames = ["jan", "feb", "mar", "apr", "may", "jun", 
+                                  "jul", "aug", "sep", "oct", "nov", "dec"];
         auto nb = dt.toLower();
         foreach(n, mon; mnames) {
             size_t i = nb.indexOf(mon);
