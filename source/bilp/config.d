@@ -146,7 +146,16 @@ class ConfigFile : XmlErrorHandler {
                     });
                 ss.reloadInterval = ri;
                 break;
-            case "embedly_key":
+            case "no_http":
+                if (!serverOnly) break;
+                parentShouldBe("server");
+                ss.serve = false;
+                break;
+            case "onreload":
+                if (!serverOnly) break;
+                parentShouldBe("server");
+                onEnd = { ss.onreload = content; };
+                break;
             
             // -- site ids --
             case "sites":
