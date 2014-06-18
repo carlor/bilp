@@ -573,9 +573,9 @@ class LinkInfo {
                 // parse from ogp html
                 foreach (captures; std.regex.match(html, ctRegex!(`<meta[^>]+property=["']og:(\S+)["'][^>]+content=("[^"]+"|'[^']+')`, `gi`))) {
                     if (sel == captures[1]) {
-                        return captures[2][1..$-1];
+                        return fromEntity(captures[2][1..$-1]);
                     } else if (sel == "pubDate" && captures[1] == "article:published_time") {
-                        return captures[2][1..$-1];
+                        return fromEntity(captures[2][1..$-1]);
                     }
                 }
                 return null;
