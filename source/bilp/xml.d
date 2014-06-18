@@ -16,6 +16,7 @@ import std.string;
 import std.stdio;
 
 public:
+import tango.text.xml.DocEntity : fromEntity;
 
 alias kstr = const(char)[];
 alias Attr = Attribute!char;

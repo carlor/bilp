@@ -16,9 +16,14 @@ import core.time;
 import std.conv;
 import std.datetime;
 import std.file;
+import std.process;
 
 import vibe.d;
 
+version (OSX) {
+    import core.sys.posix.unistd;
+    extern(C) char*** _NSGetEnviron() nothrow;
+}
 
 class BilpServer {
   private:
@@ -37,10 +42,12 @@ class BilpServer {
     
     void start() {
         loadFile();
-
-        auto router = new URLRouter();
-        router.get("/", &showPage);
-        listenHTTP(settings.http, router);
+        
+        if (settings.serve) {
+            auto router = new URLRouter();
+            router.get("/", &showPage);
+            listenHTTP(settings.http, router);
+        }
 
     }
   
@@ -79,10 +86,42 @@ class BilpServer {
             logError("%s", e.toString);
             config.parsingException = e;
         }
-        
+
         auto rh = config.render();
-        synchronized (rhLock) {
-            renderedHtml = rh;
+        if (settings.serve) {
+            synchronized (rhLock) {
+                renderedHtml = rh;
+            }
+        }
+        
+        if (settings.onreload.length) {
+            auto tempfile = tempDir ~ "/" ~ "bilp_render_tmp.html";
+            write(tempfile, rh);
+            
+            version (OSX) {
+                auto pid = fork();
+                if (pid < 0) {
+                    logError("unable to fork the shell");
+                } else if (pid == 0) {
+                    alias cstring = char*;
+                    cstring* environ = *_NSGetEnviron();
+                    
+                    cstring[] envp;
+                    while (environ !is null) {
+                        envp ~= *environ;
+                        environ++;
+                    }
+                    envp ~= ("BILP_RENDER="~tempfile~"\0").dup.ptr;
+                    envp ~= null;
+                    
+                    auto r = execve("/bin/bash".ptr, ["/bin/bash".ptr, "-c".ptr, (settings.onreload~"\0").ptr, null].ptr, envp.ptr);
+                    logError("unable to fork the shell");
+                    _exit(r);
+                }
+            } else {
+                auto proc = std.process.executeShell(settings.onreload, ["BILP_RENDER": tempfile]);
+                logInfo("onreload done, status: %s, output: %s", proc.status, proc.output);
+            }
         }
         
         sw.stop();
@@ -104,4 +143,6 @@ class BilpServer {
 struct ServerSettings {
     HTTPServerSettings http;
     Duration reloadInterval;
+    bool serve = true;
+    string onreload;
 }

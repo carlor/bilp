@@ -146,7 +146,16 @@ class ConfigFile : XmlErrorHandler {
                     });
                 ss.reloadInterval = ri;
                 break;
-            case "embedly_key":
+            case "no_http":
+                if (!serverOnly) break;
+                parentShouldBe("server");
+                ss.serve = false;
+                break;
+            case "onreload":
+                if (!serverOnly) break;
+                parentShouldBe("server");
+                onEnd = { ss.onreload = content; };
+                break;
             
             // -- site ids --
             case "sites":
@@ -564,9 +573,9 @@ class LinkInfo {
                 // parse from ogp html
                 foreach (captures; std.regex.match(html, ctRegex!(`<meta[^>]+property=["']og:(\S+)["'][^>]+content=("[^"]+"|'[^']+')`, `gi`))) {
                     if (sel == captures[1]) {
-                        return captures[2][1..$-1];
+                        return fromEntity(captures[2][1..$-1]);
                     } else if (sel == "pubDate" && captures[1] == "article:published_time") {
-                        return captures[2][1..$-1];
+                        return fromEntity(captures[2][1..$-1]);
                     }
                 }
                 return null;

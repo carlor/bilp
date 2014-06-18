@@ -6,7 +6,6 @@
 	"authors": ["Nathan M. Swan"],
     "license": "GPL-3.0",
 	"dependencies": {
-	    "vibe-d": "~master",
-	    "tango": {"path": "../dvm/tango", "version": "~master"}
+	    "vibe-d": "~master"
 	}
 }
